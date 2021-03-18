@@ -29,13 +29,6 @@ class CIteratorThread /*!!!!!: public CSpaceOptimizedGlobalObject */{
   double prwin()   { return _prwin; }
   double prtie()   { return _prtie; }
   double prlos()   { return _prlos; }
-  double outs() { return _nouts; }
-  double outodds() { return _outodds; }
-  double impliedodds() { return _impliedodds; }
-  double potodds() { return _potodds; }
-  double myequity() { return _myequity; }
-  double potequity() { return _potequity; }
-  double prwin_mustplay() { return _prwin_mustplay; }
  public:
   static bool IteratorThreadComplete() { return _iterations_calculated >= _iterations_required; }
   bool IteratorThreadWorking()    { return ((_iterations_calculated > 0) && (_iterations_calculated < _iterations_required)); }
@@ -78,7 +71,7 @@ class CIteratorThread /*!!!!!: public CSpaceOptimizedGlobalObject */{
   static int _total_weight[kMaxNumberOfPlayers];
   static int _nopponents;;
  private:
-  static double _prwin, _prtie, _prlos, _nouts, _outodds, _impliedodds, _potodds, _myequity, _potequity, _prwin_mustplay;
+  static double _prwin, _prtie, _prlos;
 };
 
 extern CIteratorThread *p_iterator_thread;

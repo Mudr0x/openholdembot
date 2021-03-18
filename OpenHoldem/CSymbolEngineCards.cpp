@@ -27,8 +27,6 @@
 #include "CTableState.h"
 #include "inlines/eval.h"
 #include "..\CTransform\CTransform.h"
-//#include "CWhiteInfoBox.h"
-//#include "RtaWindow.h"
 
 
 
@@ -578,8 +576,6 @@ void CSymbolEngineCards::CalcUnknownCards()
 		}
 	}
 	write_log(Preferences()->debug_symbolengine(), "[CSymbolEngineCards] nouts: %i\n", _nouts);
-	//p_white_info_box->SetnOuts(_nouts);
-	//p_rta_window->SetnOuts(_nouts);
 	AssertRange(_ncardsknown,   0, kNumberOfCardsPerDeck);
 	AssertRange(_ncardsunknown, 0, kNumberOfCardsPerDeck);
 	AssertRange(_nouts,         0, kNumberOfCardsPerDeck);
