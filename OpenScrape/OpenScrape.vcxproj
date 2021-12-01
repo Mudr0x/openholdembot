@@ -151,6 +151,7 @@
     <ClCompile Include="DialogTableMap.cpp" />
     <ClCompile Include="global.cpp" />
     <ClCompile Include="HScrollListBox.cpp" />
+    <ClCompile Include="Led.cpp" />
     <ClCompile Include="ListOfSymbols.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="..\OpenHoldem\NumericalFunctions.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="DialogTableMap.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="HScrollListBox.h" />
+    <ClInclude Include="Led.h" />
     <ClInclude Include="ListOfSymbols.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="..\OpenHoldem\NumericalFunctions.h" />
@@ -226,6 +228,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenScrape.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\leds.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
