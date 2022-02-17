@@ -335,6 +335,7 @@
 #define IDC_DISABLE_MSGBOX              1301
 #define IDC_RECORD_EVERY_CHANGE_PLAYING 1302
 #define IDC_MAXIMUM_LOGSIZE             1302
+#define IDC_AMOUNTS_IN_BB               1302
 #define IDC_MAXIMUM_LOGSIZE_SPIN        1303
 #define IDC_OMF_CLASS_NAME              1304
 #define IDC_OMF_MUTEX_NAME              1305

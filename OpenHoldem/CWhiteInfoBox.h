@@ -41,10 +41,6 @@ protected:
   CString GtoText();
   // Info to be displayed
   CString _last_action;
-  CString	_info_handrank;
-  CString	_info_gto;;
-  CString	_info_nouts;
- private:
   CHyperLink	m_Link;
   CRect			mLinkRect;
   CString		_custom_log_message;

@@ -1,4 +1,5 @@
-﻿// GraphObject.cpp : implementation file
+
+// GraphObject.cpp : implementation file
 //
 
 #include "stdafx.h"

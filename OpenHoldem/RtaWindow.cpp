@@ -101,7 +101,7 @@ void CRtaWindow::Init(CWnd * pWnd)
 		// Size and position
 		//CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 		0, 0, 350, 700,
-		pWnd->m_hWnd,       // Parent window   
+		pWnd->m_hWnd,       // Parent window 
 		NULL				// Menu
 	);
 

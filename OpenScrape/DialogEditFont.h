@@ -16,6 +16,7 @@
 #include "afxwin.h"
 #include "resource.h"
 
+
 // CDlgEditFont dialog
 
 class CDlgEditFont : public CDialog
@@ -48,8 +49,11 @@ protected:
 	CEdit		m_PixelSep;
 	LOGFONT		lf_fixed;
 	CFont		separation_font;
-	CButton m_Delete;
-	CButton m_Sort;
+	CButton		m_Delete;
+	CButton		m_Sort;
+	CButton		m_Abort;
 
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedAbort();
 };

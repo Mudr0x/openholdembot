@@ -92,7 +92,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files\Visual Leak Detector\include;..\pokereval\include;..\pokereval\include\inlines;..\postgres;..\winmgr;..\hscroll-list-box;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\Visual Leak Detector\include;..\pokereval\include;..\pokereval\include\inlines;..\postgres;..\winmgr;..\hscroll-list-box;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;OEMRESOURCE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -120,7 +120,7 @@
       <SubSystem>Windows</SubSystem>
       <StackReserveSize>8388608</StackReserveSize>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>C:\Program Files\Visual Leak Detector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\Visual Leak Detector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
@@ -208,6 +208,9 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="2DBarGraph.cpp" />
+    <ClCompile Include="2DLineGraph.cpp" />
+    <ClCompile Include="2DPieGraph.cpp" />
     <ClCompile Include="AllinAdjustment.cpp" />
     <ClCompile Include="BetpotCalculations.cpp" />
     <ClCompile Include="CAllinSlider.cpp" />
@@ -271,6 +274,7 @@
     <ClCompile Include="CTitleEvaluator.cpp" />
     <ClCompile Include="CValidator.cpp" />
     <ClCompile Include="CWhiteInfoBox.cpp" />
+    <ClCompile Include="GraphObject.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MD5_Checksum.cpp" />
     <ClCompile Include="Median.cpp" />
@@ -280,6 +284,7 @@
     <ClCompile Include="OpenHoldemDoc.cpp" />
     <ClCompile Include="COpenHoldemStarter.cpp" />
     <ClCompile Include="CWatchdog.cpp" />
+    <ClCompile Include="RtaWindow.cpp" />
     <ClCompile Include="Singletons.cpp" />
     <ClCompile Include="SLimitInfo.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -491,6 +496,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Shared\MagicNumbers\MagicNumbers.h" />
+    <ClInclude Include="2DBarGraph.h" />
+    <ClInclude Include="2DLineGraph.h" />
+    <ClInclude Include="2DPieGraph.h" />
     <ClInclude Include="AllinAdjustment.h" />
     <ClInclude Include="BetpotCalculations.h" />
     <ClInclude Include="CAllinSlider.h" />
@@ -557,6 +565,7 @@
     <ClInclude Include="CTitleEvaluator.h" />
     <ClInclude Include="CValidator.h" />
     <ClInclude Include="CWhiteInfoBox.h" />
+    <ClInclude Include="GraphObject.h" />
     <ClInclude Include="MD5_Checksum.h" />
     <ClInclude Include="Median.h" />
     <ClInclude Include="MemoryLogging.h" />
@@ -567,6 +576,7 @@
     <ClInclude Include="COpenHoldemStarter.h" />
     <ClInclude Include="CWatchdog.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="RtaWindow.h" />
     <ClInclude Include="Singletons.h" />
     <ClInclude Include="SLimitInfo.h" />
     <ClInclude Include="stdafx.h" />

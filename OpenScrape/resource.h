@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by OpenScrape.rc
 //
+#define IDCABORT                        4
 #define IDD_ABOUTBOX                    100
 #define IDR_MAINFRAME                   128
 #define IDI_ICON1                       131
@@ -102,9 +103,11 @@
 #define IDC_REGIONLIST                  1090
 #define IDC_SOURCE                      1091
 #define IDC_MISSING_FONTS               1092
-#define IDC_COMBO1                      1092
-#define IDC_EDIT1                       1093
-#define IDC_EDITXY                      1093
+#define IDC_MISSING_FONTS_ALERT         1093
+#define IDC_COMBO1                      1094
+#define IDC_EDIT1                       1095
+#define IDC_EDITXY                      1096
+#define IDB_LEDS                        1097
 #define ID_MAIN_TOOLBAR_GREENCIRCLE     32771
 #define ID_VIEW_CONNECTTOWINDOW         32772
 #define ID_VIEW_SHOWREGIONBOXES         32774
@@ -122,14 +125,15 @@
 #define ID_VIEW_PREV                    32787
 #define ID_VIEW_NEXT                    32788
 #define ID_TOOLS_CLONEREGIONS           32789
+#define ID_TOOLS_COLLECTFONTS           32790
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        147
+#define _APS_NEXT_RESOURCE_VALUE        149
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1093
+#define _APS_NEXT_CONTROL_VALUE         1098
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

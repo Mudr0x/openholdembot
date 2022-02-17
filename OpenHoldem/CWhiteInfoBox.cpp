@@ -168,14 +168,22 @@ CString CWhiteInfoBox::InfoText() {
 		sym_sblind, sym_bblind, p_engine_container->symbol_engine_tablelimits()->bigbet());
 	result.Append(s);
 
-	// ante
+	// ante + pot
 	if (sym_ante != 0) {
-		s.Format("  Ante: %s\n", Number2CString(sym_ante));
+		s.Format("  Ante: %s  Pot: %s\n", Number2CString(sym_ante), Number2CString(sym_pot));
+		result.Append(s);
+	}
+	else {
+		// Pot
+		s.Format("  Pot: %s\n", Number2CString(sym_pot));
 		result.Append(s);
 	}
 
 	// Pot
 	s.Format("  Pot: %s\n", Number2CString(sym_pot));
+	if (Preferences()->amounts_in_bb()) {
+		s.Format("  Pot: %s %s\n", Number2CString(sym_pot/sym_bblind), "BB");
+	}
 	result.Append(s);
 
 	// logged symbols
@@ -249,16 +257,6 @@ CString CWhiteInfoBox::LastAction() {
 	return _last_action;
 }
 
-void CWhiteInfoBox::SetGto(double prwin, double prtie, double prlos, int nouts, double outodds, double impliedodds, double potodds, double myequity, double potequity, bool prwin_mustplay) {
-	_prwin = prwin;
-	_prtie = prtie;
-	_prlos = prlos;
-	_nouts = nouts;
-	_outodds = outodds;
-	_impliedodds = impliedodds;
-	_potodds = potodds;
-	_myequity = myequity;
-	_potequity = potequity;
 	_prwin_mustplay = prwin_mustplay;
 }
 
