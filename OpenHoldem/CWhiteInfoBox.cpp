@@ -152,7 +152,14 @@ CString CWhiteInfoBox::InfoText() {
 		result.Append(s);
 	}
 
-	// logged symbols
+	// Pot
+	s.Format("  Pot: %s\n", Number2CString(sym_pot));
+	if (Preferences()->amounts_in_bb()) {
+		s.Format("  Pot: %s %s\n", Number2CString(sym_pot/sym_bblind), "BB");
+	}
+	result.Append(s);
+
+  // logged symbols
 	if (kMaxLogSymbolsForWhiteBox > 0) {
     result.Append("  ");
     result.Append(_custom_log_message);

@@ -333,6 +333,7 @@
 #define IDC_DISABLE_MSGBOX              1301
 #define IDC_RECORD_EVERY_CHANGE_PLAYING 1302
 #define IDC_MAXIMUM_LOGSIZE             1302
+#define IDC_AMOUNTS_IN_BB               1302
 #define IDC_MAXIMUM_LOGSIZE_SPIN        1303
 #define IDC_OMF_CLASS_NAME              1304
 #define IDC_OMF_MUTEX_NAME              1305
@@ -557,8 +558,8 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        191
-#define _APS_NEXT_COMMAND_VALUE         33006
+#define _APS_NEXT_RESOURCE_VALUE        190
+#define _APS_NEXT_COMMAND_VALUE         33000
 #define _APS_NEXT_CONTROL_VALUE         1427
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
