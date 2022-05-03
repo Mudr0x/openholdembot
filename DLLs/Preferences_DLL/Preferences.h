@@ -21,6 +21,7 @@
 #include <afxwin.h>
 #include "..\..\Shared\CCritSec\CCritSec.h"
 
+
 // global preferences constants
 enum {
   k_AutoConnector_Connect_Never = 0,
@@ -51,6 +52,7 @@ enum {
   k_prefs_debug_prwin,
   k_prefs_debug_icm,
   k_prefs_debug_occlusionchecker,
+  k_prefs_debug_opentracker,
   k_prefs_debug_pokertracker,
   k_prefs_debug_rebuy,
   k_prefs_debug_replayframes,
@@ -157,6 +159,14 @@ enum {
 
 enum {
   // String Values
+	k_prefs_ot_ip_addr,
+	k_prefs_ot_port,
+	k_prefs_ot_dbname,
+	k_prefs_ot_user,
+	k_prefs_ot_pass,
+	k_prefs_ot_poknets,
+	k_prefs_ot_hhfolders,
+	k_prefs_ot_tsfolders,
   k_prefs_pt_ip_addr,
   k_prefs_pt_port,
   k_prefs_pt_dbname,
@@ -168,6 +178,7 @@ enum {
   // leave this always at the last position
   k_prefs_last_CString_value,
 };
+
 
 class PREFERENCES_DLL_API CPreferences {
 public:
@@ -198,6 +209,15 @@ public:
   // Replay Frames
   const int replay_record() { return prefs_numerical_values[k_prefs_replay_record]; }
   const int replay_max_frames() { return prefs_numerical_values[k_prefs_replay_max_frames]; }
+  // OpenTracker
+  LPCSTR ot_ip_addr()	{ return NonEmptyStringValueElseDefault(k_prefs_ot_ip_addr); }
+  LPCSTR ot_port()		{ return NonEmptyStringValueElseDefault(k_prefs_ot_port); }
+  LPCSTR ot_dbname()	{ return NonEmptyStringValueElseDefault(k_prefs_ot_dbname); }
+  LPCSTR ot_user()		{ return NonEmptyStringValueElseDefault(k_prefs_ot_user); }
+  LPCSTR ot_pass()		{ return NonEmptyStringValueElseDefault(k_prefs_ot_pass); }
+  LPCSTR ot_poknets()	{ return NonEmptyStringValueElseDefault(k_prefs_ot_poknets); }
+  LPCSTR ot_hhfolders()		{ return NonEmptyStringValueElseDefault(k_prefs_ot_hhfolders); }
+  LPCSTR ot_tsfolders()		{ return NonEmptyStringValueElseDefault(k_prefs_ot_tsfolders); }
   // Poker Tracker
   LPCSTR pt_ip_addr() { return NonEmptyStringValueElseDefault(k_prefs_pt_ip_addr); }
   LPCSTR pt_port()    { return NonEmptyStringValueElseDefault(k_prefs_pt_port); }
@@ -225,6 +245,7 @@ public:
   const bool	debug_prwin() { return prefs_numerical_values[k_prefs_debug_prwin]; }
   const bool	debug_icm() { return prefs_numerical_values[k_prefs_debug_icm]; }
   const bool	debug_occlusionchecker() { return prefs_numerical_values[k_prefs_debug_occlusionchecker]; }
+  const bool	debug_opentracker() { return prefs_numerical_values[k_prefs_debug_opentracker]; }
   const bool	debug_pokertracker() { return prefs_numerical_values[k_prefs_debug_pokertracker]; }
   const bool	debug_rebuy() { return prefs_numerical_values[k_prefs_debug_rebuy]; }
   const bool	debug_replayframes() { return prefs_numerical_values[k_prefs_debug_replayframes]; }

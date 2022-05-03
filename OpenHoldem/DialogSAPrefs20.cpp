@@ -53,7 +53,7 @@ const int kMaxButtonsInYDirection = 23;
 
 // List of button IS,
 // alphabetically sorted by button text
-const int kNumberOfCheckboxes = 53;
+const int kNumberOfCheckboxes = 54;
 const int kCheckboxIDs[kNumberOfCheckboxes] = {
   IDC_DEBUG_ALLIN_ADJUSTMENT,
   IDC_DEBUG_AST_PRIORITY_ORDERING,
@@ -83,6 +83,7 @@ const int kCheckboxIDs[kNumberOfCheckboxes] = {
   IDC_DEBUG_OCCLUSSION,
   IDC_DEBUG_OPENHOLDEM,
   IDC_DEBUG_PARSER,
+  IDC_DEBUG_OPENTRACKER,
   IDC_DEBUG_POKERTRACKER,
   IDC_DEBUG_POPUP_BLOCKER,
   IDC_DEBUG_PREFERENCES,
@@ -163,7 +164,8 @@ BOOL CDlgSAPrefs20::OnInitDialog() {
 	CheckDlgButton(IDC_DEBUG_HEARTBEAT, Preferences()->debug_heartbeat() ? MF_CHECKED : MF_UNCHECKED);
 	CheckDlgButton(IDC_DEBUG_PRWIN, Preferences()->debug_prwin() ? MF_CHECKED : MF_UNCHECKED);
 	CheckDlgButton(IDC_DEBUG_ICM, Preferences()->debug_icm() ? MF_CHECKED : MF_UNCHECKED);
-	CheckDlgButton(IDC_DEBUG_OCCLUSSION, Preferences()->debug_occlusionchecker() ? MF_CHECKED : MF_UNCHECKED);
+	CheckDlgButton(IDC_DEBUG_OCCLUSSION, Preferences()->debug_occlusionchecker() ? MF_CHECKED : MF_UNCHECKED);;
+	CheckDlgButton(IDC_DEBUG_OPENTRACKER, Preferences()->debug_opentracker() ? MF_CHECKED : MF_UNCHECKED);
 	CheckDlgButton(IDC_DEBUG_POKERTRACKER, Preferences()->debug_pokertracker() ? MF_CHECKED : MF_UNCHECKED);
 	CheckDlgButton(IDC_DEBUG_REBUY, Preferences()->debug_rebuy() ? MF_CHECKED : MF_UNCHECKED);
 	CheckDlgButton(IDC_DEBUG_REPLAYFRAMES, Preferences()->debug_replayframes() ? MF_CHECKED : MF_UNCHECKED);
@@ -222,6 +224,7 @@ void CDlgSAPrefs20::OnOK() {
 	Preferences()->SetValue(k_prefs_debug_prwin, IsDlgButtonChecked(IDC_DEBUG_PRWIN));
 	Preferences()->SetValue(k_prefs_debug_icm, IsDlgButtonChecked(IDC_DEBUG_ICM));
 	Preferences()->SetValue(k_prefs_debug_occlusionchecker, IsDlgButtonChecked(IDC_DEBUG_OCCLUSSION));
+	Preferences()->SetValue(k_prefs_debug_opentracker, IsDlgButtonChecked(IDC_DEBUG_OPENTRACKER));
 	Preferences()->SetValue(k_prefs_debug_pokertracker, IsDlgButtonChecked(IDC_DEBUG_POKERTRACKER));
 	Preferences()->SetValue(k_prefs_debug_rebuy, IsDlgButtonChecked(IDC_DEBUG_REBUY));
 	Preferences()->SetValue(k_prefs_debug_replayframes, IsDlgButtonChecked(IDC_DEBUG_REPLAYFRAMES));

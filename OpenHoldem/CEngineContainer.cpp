@@ -60,6 +60,7 @@
 #include "CSymbolEngineOpenPPLHandAndBoardExpression.h"
 #include "CSymbolEngineOpenPPLUserVariables.h"
 #include "CSymbolEnginePokerAction.h"
+#include "CSymbolEngineOpenTracker.h"
 #include "CSymbolEnginePokerTracker.h"
 #include "CSymbolEnginePokerval.h"
 #include "CSymbolEnginePositions.h"
@@ -219,6 +220,9 @@ void CEngineContainer::CreateSymbolEngines() {
   // CSymbolEngineIsRush
   p_symbol_engine_isrush = new CSymbolEngineIsRush;
   AddSymbolEngine(p_symbol_engine_isrush);
+  // CSymbolEngineOpenTracker
+  p_symbol_engine_opentracker = new CSymbolEngineOpenTracker;
+  AddSymbolEngine(p_symbol_engine_opentracker);
   // CSymbolEnginePokerTracker
   p_symbol_engine_pokertracker = new CSymbolEnginePokerTracker;
   AddSymbolEngine(p_symbol_engine_pokertracker);

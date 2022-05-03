@@ -198,6 +198,10 @@
     <ClCompile Include="COHScriptList.cpp" />
     <ClCompile Include="COHScriptObject.cpp" />
     <ClCompile Include="CSymbolEngineFormulaSwitching.cpp" />
+    <ClCompile Include="DialogSAPrefs5.cpp" />
+    <ClCompile Include="COpenTrackerLookUp.cpp" />
+    <ClCompile Include="COpenTrackerThread.cpp" />
+    <ClCompile Include="CSymbolEngineOpenTracker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllinAdjustment.h" />
@@ -429,6 +433,10 @@
     <ClInclude Include="COHScriptObject.h" />
     <ClInclude Include="CSymbolEngineFormulaSwitching.h" />
     <ClInclude Include="..\Shared\MagicNumbers\MagicNumbers.h" />
+    <ClInclude Include="DialogSAPrefs5.h" />
+    <ClInclude Include="COpenTrackerLookUp.h" />
+    <ClInclude Include="COpenTrackerThread.h" />
+    <ClInclude Include="CSymbolEngineOpenTracker.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenHoldem.rc" />

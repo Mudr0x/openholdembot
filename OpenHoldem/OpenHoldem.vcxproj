@@ -112,7 +112,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>imm32.lib;psapi.lib;$(OutDir)Preferences.lib;$(OutDir)globals.lib;secur32.lib;..\scintilla\bin\SciLexer.lib;..\pokereval\Release\poker-eval.lib;..\lib\libpq.lib;..\lib\PerlEz.lib;$(OutDir)pokertracker_query_definitions.lib;$(OutDir)Reference User DLL.lib;$(OutDir)window_functions.lib;$(OutDir)string_functions.lib;$(OutDir)debug.lib;$(OutDir)GameStateValidation.lib;$(OutDir)files.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imm32.lib;psapi.lib;$(OutDir)Preferences.lib;$(OutDir)globals.lib;secur32.lib;..\scintilla\bin\SciLexer.lib;..\pokereval\Release\poker-eval.lib;..\lib\libpq.lib;..\lib\PerlEz.lib;$(OutDir)OpenTracker.lib;$(OutDir)pokertracker_query_definitions.lib;$(OutDir)Reference User DLL.lib;$(OutDir)window_functions.lib;$(OutDir)string_functions.lib;$(OutDir)debug.lib;$(OutDir)GameStateValidation.lib;$(OutDir)files.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)OpenHoldem.exe</OutputFile>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>libc.lib;libcmt.lib;msvcrt.lib;libcd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -156,7 +156,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>imm32.lib;psapi.lib;$(OutDir)Preferences.lib;$(OutDir)globals.lib;secur32.lib;..\scintilla\bin\SciLexer.lib;..\pokereval\Release\poker-eval.lib;..\lib\libpq.lib;..\lib\PerlEz.lib;$(OutDir)pokertracker_query_definitions.lib;$(OutDir)Reference User DLL.lib;$(OutDir)window_functions.lib;$(OutDir)string_functions.lib;$(OutDir)debug.lib;$(OutDir)GameStateValidation.lib;$(OutDir)files.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imm32.lib;psapi.lib;$(OutDir)Preferences.lib;$(OutDir)globals.lib;secur32.lib;..\scintilla\bin\SciLexer.lib;..\pokereval\Release\poker-eval.lib;..\lib\libpq.lib;..\lib\PerlEz.lib;$(OutDir)OpenTracker.lib;$(OutDir)pokertracker_query_definitions.lib;$(OutDir)Reference User DLL.lib;$(OutDir)window_functions.lib;$(OutDir)string_functions.lib;$(OutDir)debug.lib;$(OutDir)GameStateValidation.lib;$(OutDir)files.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)OpenHoldem.exe</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -194,7 +194,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>imm32.lib;psapi.lib;..\Release\Preferences.lib;..\Release\globals.lib;secur32.lib;..\scintilla\bin\SciLexer.lib;..\pokereval\Release\poker-eval.lib;..\lib\libpq.lib;..\lib\PerlEz.lib;..\Release\pokertracker_query_definitions.lib;..\Release\Reference User DLL.lib;..\Release\window_functions.lib;..\Release\string_functions.lib;..\Release\debug.lib;..\Release\GameStateValidation.lib;..\Release\files.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imm32.lib;psapi.lib;..\Release\Preferences.lib;..\Release\globals.lib;secur32.lib;..\scintilla\bin\SciLexer.lib;..\pokereval\Release\poker-eval.lib;..\lib\libpq.lib;..\lib\PerlEz.lib;$(OutDir)OpenTracker.lib;..\Release\pokertracker_query_definitions.lib;..\Release\Reference User DLL.lib;..\Release\window_functions.lib;..\Release\string_functions.lib;..\Release\debug.lib;..\Release\GameStateValidation.lib;..\Release\files.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).exe</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -232,6 +232,8 @@
     <ClCompile Include="CMemoryPool.cpp" />
     <ClCompile Include="CMyMutex.cpp" />
     <ClCompile Include="COcclusionCheck.cpp" />
+    <ClCompile Include="COpenTrackerLookUp.cpp" />
+    <ClCompile Include="COpenTrackerThread.cpp" />
     <ClCompile Include="CParseTreeOperatorNode.cpp" />
     <ClCompile Include="CParseTreeTerminalNode.cpp" />
     <ClCompile Include="CParseTreeTerminalNodeEndOfFunction.cpp" />
@@ -260,6 +262,7 @@
     <ClCompile Include="CSymbolEngineMultiplexer.cpp" />
     <ClCompile Include="CSymbolengineNutFullHouseOrFourOfAKind.cpp" />
     <ClCompile Include="CSymbolengineOpenPPL.cpp" />
+    <ClCompile Include="CSymbolEngineOpenTracker.cpp" />
     <ClCompile Include="CSymbolEnginePokerAction.cpp" />
     <ClCompile Include="CSymbolEngineRaisers.cpp" />
     <ClCompile Include="CSymbolengineTableStats.cpp" />
@@ -271,6 +274,7 @@
     <ClCompile Include="CTitleEvaluator.cpp" />
     <ClCompile Include="CValidator.cpp" />
     <ClCompile Include="CWhiteInfoBox.cpp" />
+    <ClCompile Include="DialogSAPrefs5.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MD5_Checksum.cpp" />
     <ClCompile Include="Median.cpp" />
@@ -517,6 +521,8 @@
     <ClInclude Include="CMemoryPool.h" />
     <ClInclude Include="CMyMutex.h" />
     <ClInclude Include="COcclusionCheck.h" />
+    <ClInclude Include="COpenTrackerLookUp.h" />
+    <ClInclude Include="COpenTrackerThread.h" />
     <ClInclude Include="CParseTreeOperatorNode.h" />
     <ClInclude Include="CParseTreeTerminalNode.h" />
     <ClInclude Include="CParseTreeTerminalNodeEndOfFunction.h" />
@@ -546,6 +552,7 @@
     <ClInclude Include="CSymbolengineMultiplexer.h" />
     <ClInclude Include="CSymbolengineNutFullhouseOrFourOfAKind.h" />
     <ClInclude Include="CSymbolEngineOpenPPL.h" />
+    <ClInclude Include="CSymbolEngineOpenTracker.h" />
     <ClInclude Include="CSymbolEnginePokerAction.h" />
     <ClInclude Include="CSymbolEngineRaisers.h" />
     <ClInclude Include="CSymbolengineTableStats.h" />
@@ -557,6 +564,7 @@
     <ClInclude Include="CTitleEvaluator.h" />
     <ClInclude Include="CValidator.h" />
     <ClInclude Include="CWhiteInfoBox.h" />
+    <ClInclude Include="DialogSAPrefs5.h" />
     <ClInclude Include="MD5_Checksum.h" />
     <ClInclude Include="Median.h" />
     <ClInclude Include="MemoryLogging.h" />

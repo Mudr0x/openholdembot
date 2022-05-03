@@ -41,6 +41,7 @@ const char* k_registry_keys_for_numerical_values[k_prefs_last_numerical_value + 
   "debug_prwin",
   "debug_icm",
   "debug_occlusionchecker",
+  "debug_opentracker",
   "debug_pokertracker",
   "debug_rebuy",
   "debug_replayframes",
@@ -149,6 +150,14 @@ const char* k_registry_keys_for_numerical_values[k_prefs_last_numerical_value + 
 };
 
 const char* k_registry_keys_for_CStrings[k_prefs_last_CString_value + 1] = {
+  "ot_ip_addr",
+  "ot_port",
+  "ot_dbname",
+  "ot_user",
+  "ot_pass",
+  "ot_poknets",
+  "ot_hhfolders",
+  "ot_tsfolders",
   "pt_ip_addr",
   "pt_port",
   "pt_dbname",
@@ -163,6 +172,7 @@ const char* k_registry_keys_for_CStrings[k_prefs_last_CString_value + 1] = {
   // and therefore help us to detect missing values.
   "",
 };
+
 
 void CPreferences::LoadPreferences() {
 #ifdef _DEBUG
@@ -240,6 +250,49 @@ void CPreferences::InitDefaults(void) {
 
 CString CPreferences::DefaultStringValues(int index) {
   switch (index) {
+  case k_prefs_ot_ip_addr:
+	  return "127.0.0.1";
+  case k_prefs_ot_port:
+	  return "5432";
+  case k_prefs_ot_dbname:
+	  return "noname";
+  case k_prefs_ot_user:
+	  return "opentracker";
+  case k_prefs_ot_pass:
+	  return "*** top secret ***";
+  case k_prefs_ot_poknets:
+	  return 
+		  "888 Poker,"
+		  "Betfair,"
+		  "BetOnline,"
+		  "Bovada,"
+		  "FullTilt Poker,"
+		  "iPokerNetwork,"
+		  "PartyPoker,"
+		  "PokerStars,"
+		  "Winamax,";
+  case k_prefs_ot_hhfolders:
+	  return
+		  "C:/Users/%USER%/Documents/888poker/HandHistory/,"							// 888 Poker
+		  "C:/Users/%USER%/AppData/Local/Betfair Poker/data/%ACCOUNT%/History/,"		// Betfair
+		  "C:/Program Files/BetOnline/HandHistory/Hero/,"								// BetOnline
+		  "C:/Bovada/,"																// Bovada
+		  "C:/Program Files/Full Tilt Poker/HandHistory/%ACCOUNT%/,"					// FullTilt Poker
+		  "C:/Program Files/iPoker/HandHistory/%ACCOUNT%/,"							// iPokerNetwork
+		  "C:/Program Files/PartyGaming/PartyPoker/HandHistory/%ACCOUNT%/,"			// PartyPoker
+		  "C:/Program Files/PokerStars/HandHistory/%ACCOUNT%/,"						// PokerStars
+		  "C:/Users/%USER%/Documents/Winamax Poker/Accounts/%ACCOUNT%/History/,";		// Winamax
+  case k_prefs_ot_tsfolders:
+	  return
+		  "C:/Users/%USER%/Documents/888poker/HandHistory/,"							// 888 Poker
+		  "C:/Users/%USER%/AppData/Local/Betfair Poker/data/%ACCOUNT%/History/,"		// Betfair
+		  "C:/Program Files/BetOnline/HandHistory/Hero/,"								// BetOnline
+		  "C:/Bovada/,"																// Bovada
+		  "C:/Program Files/Full Tilt Poker/HandHistory/%ACCOUNT%/,"					// FullTilt Poker
+		  "C:/Program Files/iPoker/HandHistory/%ACCOUNT%/,"							// iPokerNetwork
+		  "C:/Program Files/PartyGaming/PartyPoker/HandHistory/%ACCOUNT%/,"			// PartyPoker
+		  "C:/Program Files/PokerStars/TournSummary/%ACCOUNT%/,"						// PokerStars
+		  "C:/Users/%USER%/Documents/Winamax Poker/Accounts/%ACCOUNT%/History/,";		// Winamax;
   case k_prefs_pt_ip_addr:
     return "127.0.0.1";
   case k_prefs_pt_port:

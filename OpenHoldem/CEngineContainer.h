@@ -45,6 +45,7 @@ class CSymbolEngineOpenPPL;
 class CSymbolEngineOpenPPLHandAndBoardExpression;
 class CSymbolEngineOpenPPLUserVariables;
 class CSymbolEnginePokerAction;
+class CSymbolEngineOpenTracker;
 class CSymbolEnginePokerTracker;
 class CSymbolEnginePokerval;
 class CSymbolEnginePositions;
@@ -157,6 +158,8 @@ public:
     { return p_symbol_engine_openppl_user_variables; }
   CSymbolEnginePokerAction *symbol_engine_poker_action()
     { return p_symbol_engine_poker_action; }
+  CSymbolEngineOpenTracker *symbol_engine_opentracker()
+	{ return p_symbol_engine_opentracker; }
   CSymbolEnginePokerTracker *symbol_engine_pokertracker()
     { return p_symbol_engine_pokertracker; }
   CSymbolEnginePokerval *symbol_engine_pokerval()
@@ -218,6 +221,7 @@ private:
   CSymbolEngineOpenPPLHandAndBoardExpression *p_symbol_engine_open_ppl_hand_and_board_expression;
   CSymbolEngineOpenPPLUserVariables *p_symbol_engine_openppl_user_variables;
   CSymbolEnginePokerAction *p_symbol_engine_poker_action;
+  CSymbolEngineOpenTracker *p_symbol_engine_opentracker;
   CSymbolEnginePokerTracker *p_symbol_engine_pokertracker;
   CSymbolEnginePokerval *p_symbol_engine_pokerval;
   CSymbolEnginePositions *p_symbol_engine_positions;
