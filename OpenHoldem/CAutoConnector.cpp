@@ -12,7 +12,7 @@
 //
 //******************************************************************************
 
-#include "stdafx.h"
+#include "pch.h"
 #include "CAutoConnector.h"
 
 #include <afxwin.h>

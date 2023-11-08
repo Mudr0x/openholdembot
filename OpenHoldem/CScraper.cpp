@@ -13,7 +13,7 @@
 //
 //******************************************************************************
 
-#include "StdAfx.h"
+#include "pch.h"
 #include "CScraper.h"
 
 #include "Bitmaps.h" 

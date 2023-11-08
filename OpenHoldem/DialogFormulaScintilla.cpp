@@ -16,7 +16,7 @@
 
 // menu options, menu edit commands
 
-#include "stdafx.h"
+#include "pch.h"
 #include "DialogFormulaScintilla.h"
 
 #include <io.h>

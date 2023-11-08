@@ -15,11 +15,11 @@
 // MainFrm.cpp : implementation of the CMainFrame class
 //
 
-#ifndef VC_EXTRALEAN
-#define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
-#include <windows.h>
+#include "pch.h"
+#include <Gdiplus.h>
+//#include <gdiplusheaders.h>
+//#include <gdiplusgraphics.h>
 
-#include "stdafx.h"
 #include "MainFrm.h"
 
 #include "CRegionCloner.h"
@@ -31,6 +31,7 @@
 #include "OpenScrapeDoc.h"
 #include "OpenScrapeView.h"
 #include "registry.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -236,6 +237,143 @@ void CMainFrame::ForceRedraw()
 	theApp.m_TableMapDlg->Invalidate(true);
 }
 
+void CMainFrame::capture_window(HWND window_handle, const std::wstring& output_file_path)
+{
+	// Init COM
+	init_apartment(winrt::apartment_type::multi_threaded);
+
+	// Create Direct 3D Device
+	winrt::com_ptr<ID3D11Device> d3d_device;
+
+	winrt::check_hresult(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT,
+		nullptr, 0, D3D11_SDK_VERSION, d3d_device.put(), nullptr, nullptr));
+
+	winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice device;
+	const auto dxgiDevice = d3d_device.as<IDXGIDevice>();
+	{
+		winrt::com_ptr<IInspectable> inspectable;
+		winrt::check_hresult(CreateDirect3D11DeviceFromDXGIDevice(dxgiDevice.get(), inspectable.put()));
+		device = inspectable.as<winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice>();
+	}
+
+	auto idxgi_device2 = dxgiDevice.as<IDXGIDevice2>();
+	winrt::com_ptr<IDXGIAdapter> adapter;
+	winrt::check_hresult(idxgi_device2->GetParent(winrt::guid_of<IDXGIAdapter>(), adapter.put_void()));
+	winrt::com_ptr<IDXGIFactory2> factory;
+	winrt::check_hresult(adapter->GetParent(winrt::guid_of<IDXGIFactory2>(), factory.put_void()));
+
+	ID3D11DeviceContext* d3d_context = nullptr;
+	d3d_device->GetImmediateContext(&d3d_context);
+
+	RECT rect{};
+	DwmGetWindowAttribute(window_handle, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT));
+	const auto size = winrt::Windows::Graphics::SizeInt32{ rect.right - rect.left, rect.bottom - rect.top };
+
+	winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool m_frame_pool =
+		winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::Create(
+			device,
+			winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized,
+			2,
+			size);
+
+	const auto activation_factory = winrt::get_activation_factory<
+		winrt::Windows::Graphics::Capture::GraphicsCaptureItem>();
+	auto interop_factory = activation_factory.as<IGraphicsCaptureItemInterop>();
+	winrt::Windows::Graphics::Capture::GraphicsCaptureItem capture_item = { nullptr };
+	interop_factory->CreateForWindow(window_handle, winrt::guid_of<ABI::Windows::Graphics::Capture::IGraphicsCaptureItem>(),
+		winrt::put_abi(capture_item));
+
+	auto is_frame_arrived = false;
+	winrt::com_ptr<ID3D11Texture2D> texture;
+	const auto session = m_frame_pool.CreateCaptureSession(capture_item);
+	m_frame_pool.FrameArrived([&](auto& frame_pool, auto&)
+		{
+			if (is_frame_arrived)
+			{
+				return;
+			}
+			auto frame = frame_pool.TryGetNextFrame();
+
+			struct __declspec(uuid("A9B3D012-3DF2-4EE3-B8D1-8695F457D3C1"))
+				IDirect3DDxgiInterfaceAccess : ::IUnknown
+			{
+				virtual HRESULT __stdcall GetInterface(GUID const& id, void** object) = 0;
+			};
+
+			auto access = frame.Surface().as<IDirect3DDxgiInterfaceAccess>();
+			access->GetInterface(winrt::guid_of<ID3D11Texture2D>(), texture.put_void());
+			is_frame_arrived = true;
+			return;
+		});
+
+	session.StartCapture();
+
+	// Message pump
+	MSG message;
+	while (!is_frame_arrived)
+	{
+		if (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE) > 0)
+		{
+			DispatchMessage(&message);
+		}
+	}
+
+	//session.Close();
+
+	D3D11_TEXTURE2D_DESC captured_texture_desc;
+	texture->GetDesc(&captured_texture_desc);
+
+	captured_texture_desc.Usage = D3D11_USAGE_STAGING;
+	captured_texture_desc.BindFlags = 0;
+	captured_texture_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	captured_texture_desc.MiscFlags = 0;
+
+	winrt::com_ptr<ID3D11Texture2D> user_texture = nullptr;
+	winrt::check_hresult(d3d_device->CreateTexture2D(&captured_texture_desc, nullptr, user_texture.put()));
+
+	d3d_context->CopyResource(user_texture.get(), texture.get());
+
+	D3D11_MAPPED_SUBRESOURCE resource;
+	winrt::check_hresult(d3d_context->Map(user_texture.get(), NULL, D3D11_MAP_READ, 0, &resource));
+
+	BITMAPINFO l_bmp_info;
+
+	// BMP 32 bpp
+	ZeroMemory(&l_bmp_info, sizeof(BITMAPINFO));
+	l_bmp_info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	l_bmp_info.bmiHeader.biBitCount = 32;
+	l_bmp_info.bmiHeader.biCompression = BI_RGB;
+	l_bmp_info.bmiHeader.biWidth = captured_texture_desc.Width;
+	l_bmp_info.bmiHeader.biHeight = captured_texture_desc.Height;
+	l_bmp_info.bmiHeader.biPlanes = 1;
+	l_bmp_info.bmiHeader.biSizeImage = captured_texture_desc.Width * captured_texture_desc.Height * 4;
+
+	std::unique_ptr<BYTE> p_buf(new BYTE[l_bmp_info.bmiHeader.biSizeImage]);
+	UINT l_bmp_row_pitch = captured_texture_desc.Width * 4;
+	auto sptr = static_cast<BYTE*>(resource.pData);
+	auto dptr = p_buf.get() + l_bmp_info.bmiHeader.biSizeImage - l_bmp_row_pitch;
+
+	UINT l_row_pitch = std::min<UINT>(l_bmp_row_pitch, resource.RowPitch);
+
+	for (size_t h = 0; h < captured_texture_desc.Height; ++h)
+	{
+		memcpy_s(dptr, l_bmp_row_pitch, sptr, l_row_pitch);
+		sptr += resource.RowPitch;
+		dptr -= l_bmp_row_pitch;
+	}
+
+	BITMAPINFOHEADER bmih = l_bmp_info.bmiHeader;
+
+	void* bits;
+	bits = (void*)(p_buf.get());
+
+	HDC hdc = ::GetDC(window_handle);
+
+	HBITMAP hbmp = CreateDIBitmap(hdc, &bmih, CBM_INIT, bits, &l_bmp_info, DIB_RGB_COLORS);
+
+	::ReleaseDC(NULL, hdc);
+}
+
 void CMainFrame::OnViewConnecttowindow()
 {
 	LPARAM				lparam;
@@ -265,6 +403,31 @@ void CMainFrame::OnViewConnecttowindow()
 		// Display table select dialog
 		if (cstd.DoModal() == IDOK) 
 		{
+			RECT rc_client = { 0 };
+			::GetClientRect(g_tlist[cstd.selected_item].hwnd, &rc_client);
+			HWND tst = g_tlist[cstd.selected_item].hwnd;
+			if (rc_client == RECT{ 0 })
+				return;
+			// Obtaining the factory
+			auto interopFactory = winrt::get_activation_factory<
+				winrt::Windows::Graphics::Capture::GraphicsCaptureItem,
+				IGraphicsCaptureItemInterop>();
+
+			winrt::Windows::Graphics::Capture::GraphicsCaptureItem item{ nullptr };
+
+			// Creating a GraphicsCaptureItem from a HWND
+			try {
+				winrt::check_hresult(interopFactory->CreateForWindow(
+					g_tlist[cstd.selected_item].hwnd,
+					winrt::guid_of<winrt::Windows::Graphics::Capture::GraphicsCaptureItem>(),
+					winrt::put_abi(item)));
+			}
+			catch (winrt::hresult_error const& ex) {
+				return;
+			}
+			
+			//capture_window(g_tlist[cstd.selected_item].hwnd, L"output.bmp");
+			
 			// Save hwnd and rect of window we are attached to
 			pDoc->attached_hwnd = g_tlist[cstd.selected_item].hwnd;
 			pDoc->attached_rect.left = g_tlist[cstd.selected_item].crect.left;
@@ -755,14 +918,91 @@ void CMainFrame::OnUpdateGroupregionsByname(CCmdUI *pCmdUI)
 	pCmdUI->SetCheck(theApp.m_TableMapDlg->region_grouping==BY_NAME);
 }
 
+BOOL SaveHBITMAPToFile(HBITMAP hBitmap, LPCTSTR lpszFileName)
+{
+	HDC hDC;
+	int iBits;
+	WORD wBitCount;
+	DWORD dwPaletteSize = 0, dwBmBitsSize = 0, dwDIBSize = 0, dwWritten = 0;
+	BITMAP Bitmap0;
+	BITMAPFILEHEADER bmfHdr;
+	BITMAPINFOHEADER bi;
+	LPBITMAPINFOHEADER lpbi;
+	HANDLE fh, hDib, hPal, hOldPal2 = NULL;
+	hDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
+	iBits = GetDeviceCaps(hDC, BITSPIXEL) * GetDeviceCaps(hDC, PLANES);
+	DeleteDC(hDC);
+	if (iBits <= 1)
+		wBitCount = 1;
+	else if (iBits <= 4)
+		wBitCount = 4;
+	else if (iBits <= 8)
+		wBitCount = 8;
+	else
+		wBitCount = 24;
+	GetObject(hBitmap, sizeof(Bitmap0), (LPSTR)&Bitmap0);
+	bi.biSize = sizeof(BITMAPINFOHEADER);
+	bi.biWidth = Bitmap0.bmWidth;
+	bi.biHeight = -Bitmap0.bmHeight;
+	bi.biPlanes = 1;
+	bi.biBitCount = wBitCount;
+	bi.biCompression = BI_RGB;
+	bi.biSizeImage = 0;
+	bi.biXPelsPerMeter = 0;
+	bi.biYPelsPerMeter = 0;
+	bi.biClrImportant = 0;
+	bi.biClrUsed = 256;
+	dwBmBitsSize = ((Bitmap0.bmWidth * wBitCount + 31) & ~31) / 8
+		* Bitmap0.bmHeight;
+	hDib = GlobalAlloc(GHND, dwBmBitsSize + dwPaletteSize + sizeof(BITMAPINFOHEADER));
+	lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDib);
+	*lpbi = bi;
+
+	hPal = GetStockObject(DEFAULT_PALETTE);
+	if (hPal)
+	{
+		hDC = GetDC(NULL);
+		hOldPal2 = SelectPalette(hDC, (HPALETTE)hPal, FALSE);
+		RealizePalette(hDC);
+	}
+
+
+	GetDIBits(hDC, hBitmap, 0, (UINT)Bitmap0.bmHeight, (LPSTR)lpbi + sizeof(BITMAPINFOHEADER)
+		+ dwPaletteSize, (BITMAPINFO*)lpbi, DIB_RGB_COLORS);
+
+	if (hOldPal2)
+	{
+		SelectPalette(hDC, (HPALETTE)hOldPal2, TRUE);
+		RealizePalette(hDC);
+		ReleaseDC(NULL, hDC);
+	}
+
+	fh = CreateFile(lpszFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+
+	if (fh == INVALID_HANDLE_VALUE)
+		return FALSE;
+
+	bmfHdr.bfType = 0x4D42; // "BM"
+	dwDIBSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwPaletteSize + dwBmBitsSize;
+	bmfHdr.bfSize = dwDIBSize;
+	bmfHdr.bfReserved1 = 0;
+	bmfHdr.bfReserved2 = 0;
+	bmfHdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + (DWORD)sizeof(BITMAPINFOHEADER) + dwPaletteSize;
+
+	WriteFile(fh, (LPSTR)&bmfHdr, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
+
+	WriteFile(fh, (LPSTR)lpbi, dwDIBSize, &dwWritten, NULL);
+	GlobalUnlock(hDib);
+	GlobalFree(hDib);
+	CloseHandle(fh);
+	return TRUE;
+}
+
 void CMainFrame::SaveBmpPbits(void)
 {
 	HDC					hdc;
-	HDC					hdcScreen = CreateDC("DISPLAY", NULL, NULL, NULL);
-	HDC					hdcCompatible = CreateCompatibleDC(hdcScreen); 
-	HBITMAP				old_bitmap;
 	COpenScrapeDoc		*pDoc = COpenScrapeDoc::GetDocument();
-	int					width, height;
 
 	// Clean up from a previous connect, if needed
 	if (pDoc->attached_bitmap != NULL)
@@ -773,26 +1013,188 @@ void CMainFrame::SaveBmpPbits(void)
 
 	if (pDoc->attached_pBits) 
 	{
-		delete []pDoc->attached_pBits;
+		//delete []pDoc->attached_pBits;
 		pDoc->attached_pBits = NULL;
 	}
 
 	// Get DC for connected window
 	hdc = ::GetDC(pDoc->attached_hwnd);
 
+	// Init COM
+	winrt::init_apartment(winrt::apartment_type::multi_threaded);
+
+	// Create Direct 3D Device
+	winrt::com_ptr<ID3D11Device> d3dDevice;
+
+	winrt::check_hresult(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT,
+		nullptr, 0, D3D11_SDK_VERSION, d3dDevice.put(), nullptr, nullptr));
+
+
+	winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice device;
+	const auto dxgiDevice = d3dDevice.as<IDXGIDevice>();
+	{
+		winrt::com_ptr<::IInspectable> inspectable;
+		winrt::check_hresult(CreateDirect3D11DeviceFromDXGIDevice(dxgiDevice.get(), inspectable.put()));
+		device = inspectable.as<winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice>();
+	}
+
+
+	auto idxgiDevice2 = dxgiDevice.as<IDXGIDevice2>();
+	winrt::com_ptr<IDXGIAdapter> adapter;
+	winrt::check_hresult(idxgiDevice2->GetParent(winrt::guid_of<IDXGIAdapter>(), adapter.put_void()));
+	winrt::com_ptr<IDXGIFactory2> factory;
+	winrt::check_hresult(adapter->GetParent(winrt::guid_of<IDXGIFactory2>(), factory.put_void()));
+
+	ID3D11DeviceContext* d3dContext = nullptr;
+	d3dDevice->GetImmediateContext(&d3dContext);
+
+	RECT rect {};
+	DwmGetWindowAttribute(pDoc->attached_hwnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT));
+	const auto size = winrt::Windows::Graphics::SizeInt32{ rect.right - rect.left, rect.bottom - rect.top };
+
+	winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool m_framePool =
+		winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::Create(
+			device,
+			winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized,
+			2,
+			size);
+
+	const auto activationFactory = winrt::get_activation_factory<
+		winrt::Windows::Graphics::Capture::GraphicsCaptureItem>();
+	auto interopFactory = activationFactory.as<IGraphicsCaptureItemInterop>();
+	winrt::Windows::Graphics::Capture::GraphicsCaptureItem captureItem = { nullptr };
+	interopFactory->CreateForWindow(pDoc->attached_hwnd, winrt::guid_of<ABI::Windows::Graphics::Capture::IGraphicsCaptureItem>(),
+		reinterpret_cast<void**>(winrt::put_abi(captureItem)));
+
+	auto isFrameArrived = false;
+	winrt::com_ptr<ID3D11Texture2D> texture;
+	const auto session = m_framePool.CreateCaptureSession(captureItem);
+	m_framePool.FrameArrived([&](auto& framePool, auto&)
+		{
+			if (isFrameArrived) return;
+			auto frame = framePool.TryGetNextFrame();
+
+			struct __declspec(uuid("A9B3D012-3DF2-4EE3-B8D1-8695F457D3C1"))
+				IDirect3DDxgiInterfaceAccess : ::IUnknown
+			{
+				virtual HRESULT __stdcall GetInterface(GUID const& id, void** object) = 0;
+			};
+
+			auto access = frame.Surface().as<IDirect3DDxgiInterfaceAccess>();
+			access->GetInterface(winrt::guid_of<ID3D11Texture2D>(), texture.put_void());
+			isFrameArrived = true;
+			return;
+		});
+
+
+	session.IsCursorCaptureEnabled(false);
+	session.StartCapture();
+
+
+	// Message pump
+	MSG msg;
+	clock_t timer = clock();
+	while (!isFrameArrived)
+	{
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0)
+			DispatchMessage(&msg);
+
+		if (clock() - timer > 20000)
+		{
+			// TODO: try to make here a better error handling
+			return;
+		}
+	}
+
+	session.Close();
+
+	D3D11_TEXTURE2D_DESC capturedTextureDesc;
+	texture->GetDesc(&capturedTextureDesc);
+
+	capturedTextureDesc.Usage = D3D11_USAGE_STAGING;
+	capturedTextureDesc.BindFlags = 0;
+	capturedTextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	capturedTextureDesc.MiscFlags = 0;
+
+	winrt::com_ptr<ID3D11Texture2D> userTexture = nullptr;
+	winrt::check_hresult(d3dDevice->CreateTexture2D(&capturedTextureDesc, NULL, userTexture.put()));
+
+	d3dContext->CopyResource(userTexture.get(), texture.get());
+
+
+	D3D11_MAPPED_SUBRESOURCE resource;
+	winrt::check_hresult(d3dContext->Map(userTexture.get(), NULL, D3D11_MAP_READ, 0, &resource));
+
+	BITMAPINFO lBmpInfo;
+
+	// BMP 32 bpp
+	ZeroMemory(&lBmpInfo, sizeof(BITMAPINFO));
+	lBmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	lBmpInfo.bmiHeader.biBitCount = 32;
+	lBmpInfo.bmiHeader.biCompression = BI_RGB;
+	lBmpInfo.bmiHeader.biWidth = capturedTextureDesc.Width;
+	lBmpInfo.bmiHeader.biHeight = capturedTextureDesc.Height;
+	lBmpInfo.bmiHeader.biPlanes = 1;
+	lBmpInfo.bmiHeader.biSizeImage = capturedTextureDesc.Width * capturedTextureDesc.Height * 4;
+
+	std::unique_ptr<BYTE> pBuf(new BYTE[lBmpInfo.bmiHeader.biSizeImage]);
+	UINT lBmpRowPitch = capturedTextureDesc.Width * 4;
+	auto sptr = static_cast<BYTE*>(resource.pData);
+	auto dptr = pBuf.get() + lBmpInfo.bmiHeader.biSizeImage - lBmpRowPitch;
+
+	UINT lRowPitch = std::min<UINT>(lBmpRowPitch, resource.RowPitch);
+
+	for (size_t h = 0; h < capturedTextureDesc.Height; ++h)
+	{
+		memcpy_s(dptr, lBmpRowPitch, sptr, lRowPitch);
+		sptr += resource.RowPitch;
+		dptr -= lBmpRowPitch;
+	}
+
+
+	void* bits = (void*)(pBuf.get());
+
+	HBITMAP hBmp = CreateDIBitmap(hdc, &lBmpInfo.bmiHeader, CBM_INIT, bits, &lBmpInfo, DIB_RGB_COLORS);
+	//SaveHBITMAPToFile(hBmp, "output.bmp");
+
+	// Crop window image to client rect
+	RECT rcNonCli = { 0 }; //calculate non-client offsets here
+	RECT rcClient = { 0 };
+	::GetClientRect(pDoc->attached_hwnd, &rcClient);
+	RECT rcWin = { 0 };
+	::GetWindowRect(pDoc->attached_hwnd, &rcWin);
+	POINT ptClient = { 0 };
+	::ClientToScreen(pDoc->attached_hwnd, &ptClient);
+
+	rcNonCli.left = ptClient.x - rcWin.left;
+	rcNonCli.top = ptClient.y - rcWin.top;
+	rcNonCli.right = rcWin.right - ptClient.x - rcClient.right;
+	rcNonCli.bottom = rcWin.bottom - ptClient.y - rcClient.bottom;
+
+	int Width = rcClient.right - rcClient.left;
+	int Height = rcClient.bottom - rcClient.top;
+	rcClient.top += rcNonCli.top;
+	rcClient.left += rcNonCli.left;
+	rcClient.right -= rcNonCli.right;;
+	rcClient.bottom -= rcNonCli.bottom;
+
 	// Save bitmap of connected window
-	width = pDoc->attached_rect.right - pDoc->attached_rect.left;
-	height = pDoc->attached_rect.bottom - pDoc->attached_rect.top;
-	pDoc->attached_bitmap = CreateCompatibleBitmap(hdcScreen, width, height);
-	old_bitmap = (HBITMAP) SelectObject(hdcCompatible, pDoc->attached_bitmap);
-	BitBlt(hdcCompatible, 0, 0, width, height, hdc, 
-		   pDoc->attached_rect.left, pDoc->attached_rect.top, SRCCOPY);
+	HDC hdc_bitmap_orig = CreateCompatibleDC(hdc);
+	HBITMAP old_bitmap_orig = (HBITMAP)SelectObject(hdc_bitmap_orig, hBmp);
+	HDC hdc_bitmap_transform = CreateCompatibleDC(hdc);
+	HBITMAP bitmap_transform = CreateCompatibleBitmap(hdc, Width, Height);
+	HBITMAP old_bitmap_transform = (HBITMAP)SelectObject(hdc_bitmap_transform, bitmap_transform);
+
+	BitBlt(hdc_bitmap_transform, 0, 0, Width, Height, hdc_bitmap_orig, rcClient.left, rcClient.top, SRCCOPY);
+
+	//SaveHBITMAPToFile(bitmap_transform, "output.bmp");
+	pDoc->attached_bitmap = bitmap_transform;
 
 	// Get pBits of connected window
 	// Allocate heap space for BITMAPINFO
-	BITMAPINFO	*bmi;
+	BITMAPINFO* bmi;
 	int			info_len = sizeof(BITMAPINFOHEADER) + 1024;
-	bmi = (BITMAPINFO *) ::HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, info_len);
+	bmi = (BITMAPINFO*) ::HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, info_len);
 
 	// Populate BITMAPINFOHEADER
 	bmi->bmiHeader.biSize = sizeof(bmi->bmiHeader);
@@ -802,14 +1204,18 @@ void CMainFrame::SaveBmpPbits(void)
 	// Get the actual argb bit information
 	bmi->bmiHeader.biHeight = -bmi->bmiHeader.biHeight;
 	pDoc->attached_pBits = new BYTE[bmi->bmiHeader.biSizeImage];
-	::GetDIBits(hdc, pDoc->attached_bitmap, 0, height, pDoc->attached_pBits, bmi, DIB_RGB_COLORS);
+	::GetDIBits(hdc, pDoc->attached_bitmap, 0, Height, pDoc->attached_pBits, bmi, DIB_RGB_COLORS);
 
 	// Clean up
 	HeapFree(GetProcessHeap(), NULL, bmi);
-	SelectObject(hdcCompatible, old_bitmap);
+	SelectObject(hdc_bitmap_transform, old_bitmap_transform);
 	::ReleaseDC(pDoc->attached_hwnd, hdc);
-	DeleteDC(hdcCompatible);
-	DeleteDC(hdcScreen);
+	DeleteDC(hdc_bitmap_transform);
+
+	SelectObject(hdc_bitmap_orig, old_bitmap_orig);
+	DeleteDC(hdc_bitmap_orig);
+
+	DeleteDC(hdc);
 }
 
 CArray <STableList, STableList>		g_tlist; 

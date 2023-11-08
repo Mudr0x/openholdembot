@@ -57,6 +57,7 @@ class CMainFrame : public CFrameWnd {
 	void BringOpenScrapeBackToFront();
 	void SetTablemapSizeIfUnknown(int size_x, int size_y);
   void CheckIfOHReplayRunning();
+  void capture_window(HWND window_handle, const std::wstring& output_file_path);
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
