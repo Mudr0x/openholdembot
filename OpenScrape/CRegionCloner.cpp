@@ -22,13 +22,15 @@
 #include "..\Shared\MagicNumbers\MagicNumbers.h"
 #include "OpenScrape.h"
 
-const int k_number_of_circular_cloneable_regions = 39;
+const int k_number_of_circular_cloneable_regions = 43;
 
 // 1st string: name of 0-region
 // 2nd string: prefix before number
 // 3rd string: postfix after number
 const CString circular_cloneable_regions[k_number_of_circular_cloneable_regions][3] =
-{{"p0active",          "p", "active"},  
+{ {"p0acting",          "p", "acting"},
+ {"p0action",          "p", "action"},
+ {"p0active",          "p", "active"},  
 // we should already have pXbalance regions, so don't clone them
 // {"p0balance",         "p", "balance"},
  {"p0bet",             "p", "bet"},
@@ -54,6 +56,8 @@ const CString circular_cloneable_regions[k_number_of_circular_cloneable_regions]
  {"p0colourcode",      "p", "colourcode"},
  {"p0seated",          "p", "seated"},
  // Alternative for blinking fonts, etc.
+ {"u0acting",          "u", "acting"},
+ {"u0action",          "u", "action"},
  {"u0active",          "u", "active"},  
  {"u0balance",         "u", "balance"},
  {"u0bet",             "u", "bet"},

@@ -29,6 +29,7 @@
 #include "CParseErrors.h"
 
 #include "CSessionCounter.h"
+#include "CSymbolEngineActing.h"
 #include "CSymbolEngineActiveDealtPlaying.h"
 #include "CSymbolEngineAutoplayer.h"
 #include "CSymbolEngineBlinds.h"
@@ -111,6 +112,9 @@ void CEngineContainer::CreateSymbolEngines() {
   // CFunctionCollection
   p_function_collection = new CFunctionCollection;
   AddSymbolEngine(p_function_collection);
+  // CSymbolEngineActing
+  p_symbol_engine_acting = new CSymbolEngineActing();
+  AddSymbolEngine(p_symbol_engine_acting);
   // CSymbolEngineUserchair
   p_symbol_engine_userchair = new CSymbolEngineUserchair();
   AddSymbolEngine(p_symbol_engine_userchair);

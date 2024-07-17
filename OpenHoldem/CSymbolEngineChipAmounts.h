@@ -106,4 +106,8 @@ public:
 	double _nraisbets;
 };
 
+extern CSymbolEngineChipAmounts* p_symbol_engine_chip_amounts;
+
 #endif INC_CSYMBOLENGINECHIPAMOUNTS_H
+
+

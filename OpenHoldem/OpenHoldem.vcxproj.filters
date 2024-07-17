@@ -198,6 +198,8 @@
     <ClCompile Include="COHScriptList.cpp" />
     <ClCompile Include="COHScriptObject.cpp" />
     <ClCompile Include="CSymbolEngineFormulaSwitching.cpp" />
+    <ClCompile Include="CAutoOcr.cpp" />
+    <ClCompile Include="CSymbolEngineActing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllinAdjustment.h" />
@@ -429,6 +431,8 @@
     <ClInclude Include="COHScriptObject.h" />
     <ClInclude Include="CSymbolEngineFormulaSwitching.h" />
     <ClInclude Include="..\Shared\MagicNumbers\MagicNumbers.h" />
+    <ClInclude Include="..\CTransform\CAutoOcr.h" />
+    <ClInclude Include="CSymbolEngineActing.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenHoldem.rc" />

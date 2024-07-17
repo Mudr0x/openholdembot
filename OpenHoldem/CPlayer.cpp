@@ -19,8 +19,18 @@
 #include "CSymbolEngineIsOmaha.h"
 #include "CSymbolEngineTableLimits.h"
 
-// Blobal dummy to handle access to non-existing cards easily
+// Global dummy to handle access to non-existing cards easily
 Card dummy_card_nocard;
+
+enum actionType {
+    kFold,
+    kCheck,
+    kCall,
+    kBet,
+    kRaise,
+    kAllIn,
+    kNone = -1
+};
 
 CPlayer::CPlayer() {
 }
@@ -38,6 +48,8 @@ void CPlayer::Reset() {
   // We can't use set_seated(false) here, as set_seated(false) 
   // will call Reset() again; endless recursion
   _seated = false;
+  _acting = false;
+  _action = kNone;
   set_active(false);
   set_dealer(false);
   set_colourcode(kUndefinedZero);
@@ -166,6 +178,23 @@ bool CPlayer::PostingAnte() {
     return false;
   }
   return true;
+}
+
+void CPlayer::set_action(CString action) {
+    if (action == "fold")
+        _action = kFold;
+    else if (action == "check")
+        _action = kCheck;
+    else if (action == "call")
+        _action = kCall;
+    else if (action == "bet")
+        _action = kBet;
+    else if (action == "raise")
+        _action = kRaise;
+    else if (action == "allin" || action == "all-in")
+        _action = kAllIn;
+    else
+        _action = kNone;
 }
 
 void CPlayer::set_seated(bool is_seated) { 

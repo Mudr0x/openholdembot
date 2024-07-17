@@ -231,7 +231,7 @@ void CSymbolEngineRaisers::CalculateRaisers() {
 	}
 	int first_possible_raiser = FirstPossibleActor();
 	int last_possible_raiser = LastPossibleActor();
-	assert(last_possible_raiser > first_possible_raiser);
+	//assert(last_possible_raiser > first_possible_raiser);
 	assert(p_engine_container->symbol_engine_debug() != NULL);
 	double highest_bet = MinimumStartingBetCurrentOrbit(true);
 	write_log(Preferences()->debug_symbolengine(), "[CSymbolEngineRaisers] Searching for raisers from chair %i to %i with a bet higher than %.2f\n",

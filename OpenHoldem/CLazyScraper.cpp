@@ -78,11 +78,11 @@ CLazyScraper::~CLazyScraper() {
 // If in doubt be conservative.
 
 void CLazyScraper::DoScrape() {
-	if (p_scraper->IsIdenticalScrape())	{
-		_is_identical_scrape = true;
-    return;
-	}
   _is_identical_scrape = false;
+	if (p_scraper->IsIdenticalScrape()) {
+		_is_identical_scrape = true;
+    //return;
+	}
 	p_scraper->ScrapeLimits();
 	if (NeedDealerChair()) { 
 		p_scraper->ScrapeDealer();
@@ -92,27 +92,72 @@ void CLazyScraper::DoScrape() {
 		p_scraper->ScrapePlayerCards(p_engine_container->symbol_engine_userchair()->userchair());
 	}
 	p_scraper->ScrapeSeatedActive();
+	p_scraper->ScrapeActing();
 	if (NeedAllPlayersCards()) {
 		p_scraper->ScrapeAllPlayerCards(); 
 	}
 	if (NeedCommunityCards())	{
 		p_scraper->ScrapeCommonCards();
 	}
-	if (NeedFoldButton())	{
-		// For fast detection of my turn
-		// Currently included in NeedActionbuttons()
-    // No extra-scrape of fold-button for improved reaction time
+
+	// Scrape buttons ////
+	bool area_found = false;
+	CString area_name;
+	RMapCI		r_iter = p_tablemap->r$()->end();
+
+	// Reinitialize all buttons
+	for (int i = 0; i<k_max_number_of_buttons; i++) {
+		p_casino_interface->_technical_autoplayer_buttons[i].SetState("");
+		p_casino_interface->_technical_autoplayer_buttons[i].SetLabel("");
 	}
-	if (NeedActionbuttons()) {
-		p_scraper->ScrapeActionButtons();
-		p_scraper->ScrapeActionButtonLabels();
+	for (int i = 0; i<k_max_betpot_buttons; i++) {
+		p_casino_interface->_technical_betpot_buttons[i].SetState("");
+		p_casino_interface->_technical_betpot_buttons[i].SetLabel("");
 	}
-	if (NeedInterfaceButtons())	{
-		p_scraper->ScrapeInterfaceButtons();
+	for (int i = 0; i<k_max_number_of_i86X_buttons; i++) {
+		p_casino_interface->_technical_i86X_spam_buttons[i].SetState("");
+		p_casino_interface->_technical_i86X_spam_buttons[i].SetLabel("");
 	}
-	if (NeedBetpotButtons()) {
-		p_scraper->ScrapeBetpotButtons();
+
+	// Search and scrape templates first if available
+	for (int i = 0; i < k_max_area_buttons_zone; i++) {
+		area_name.Format("area_buttons_zone%c", HexadecimalChar(i));
+		r_iter = p_tablemap->r$()->find(area_name);
+		if (r_iter != p_tablemap->r$()->end()) {
+			int r_width = r_iter->second.right - r_iter->second.left;
+			int r_height = r_iter->second.bottom - r_iter->second.top;
+			if (r_width > 0 && r_height > 0) {
+				area_found = true;
+				if (NeedActionbuttons())
+					p_scraper->ScrapeButtons(area_name, "action");
+				if (NeedBetpotButtons())
+					p_scraper->ScrapeButtons(area_name, "betpot");
+				if (NeedInterfaceButtons())
+					p_scraper->ScrapeButtons(area_name, "spam");
+			}
+		}
 	}
+	// Else usual button scrape
+	if (!area_found) {
+		if (NeedFoldButton())	{
+			// For fast detection of my turn
+			// Currently included in NeedActionbuttons()
+		// No extra-scrape of fold-button for improved reaction time
+		}
+		if (NeedActionbuttons()) {
+			p_scraper->ScrapeActionButtons();
+			p_scraper->ScrapeActionButtonLabels();
+		}
+		if (NeedInterfaceButtons())	{
+			p_scraper->ScrapeInterfaceButtons();
+		}
+		if (NeedBetpotButtons()) {
+			p_scraper->ScrapeBetpotButtons();
+		}
+	}
+	// End Scrape buttons ////
+
+
 	if (NeedSlider())	{
 		p_scraper->ScrapeSlider();
 	}

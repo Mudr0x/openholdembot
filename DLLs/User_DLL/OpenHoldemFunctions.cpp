@@ -39,6 +39,12 @@ typedef double(*t_GetSymbol)(const char* name_of_single_symbol__not_expression);
 typedef void*(*t_GetPrw1326)();
 typedef char*(*t_GetHandnumber)();
 typedef char*(*t_GetPlayerName)(int chair);
+typedef double(*t_GetPlayerStack)(int chair);
+typedef double(*t_GetPlayerBet)(int chair);
+typedef bool(*t_GetPlayerPlaying)(int chair);
+typedef double(*t_GetPlayerActing)(int chair);
+typedef double(*t_GetPlayerAction)(int chair);
+typedef double(*t_GetPlayerHasAnyCards)(int chair);
 typedef char*(*t_GetTableTitle)();
 typedef void(*t_ParseHandList)(const char* name_of_list, const char* list_body);
 typedef char*(*t_ScrapeTableMapRegion)(char* p_region, int& p_returned_lengh);
@@ -49,6 +55,12 @@ t_GetSymbol p_GetSymbol = nullptr;
 t_GetPrw1326 p_GetPrw1326 = nullptr;
 t_GetHandnumber p_GetHandnumber = nullptr;
 t_GetPlayerName p_GetPlayerName = nullptr;
+t_GetPlayerStack p_GetPlayerStack = nullptr;
+t_GetPlayerBet p_GetPlayerBet = nullptr;
+t_GetPlayerPlaying p_GetPlayerPlaying = nullptr;
+t_GetPlayerActing p_GetPlayerActing = nullptr;
+t_GetPlayerAction p_GetPlayerAction = nullptr;
+t_GetPlayerHasAnyCards p_GetPlayerHasAnyCards = nullptr;
 t_GetTableTitle p_GetTableTitle = nullptr;
 t_ParseHandList p_ParseHandList = nullptr;
 t_ScrapeTableMapRegion p_ScrapeTableMapRegion = nullptr;
@@ -93,6 +105,79 @@ char* __stdcall GetPlayerName(int chair) {
     return "";
   }
   return p_GetPlayerName(chair);
+}
+
+double __stdcall GetPlayerStack(int chair) {
+	if (p_GetPlayerStack == nullptr) {
+		ErrorPointerNotInitialized("GetPlayerStack");
+		return -1;
+	}
+	return p_GetPlayerStack(chair);
+}
+
+double __stdcall GetPlayerBet(int chair) {
+	/*if (p_GetPlayerBet == nullptr) {
+		ErrorPointerNotInitialized("GetPlayerBet");
+		return -1;
+	}
+    int length;
+    string region = "p" + to_string(chair) + "bet";
+    string bet = ScrapeTableMapRegion(&region[0], length);
+    if (bet.find("$") != -1)
+        bet.replace(bet.find("$"), 1, "");
+    if (bet.find("€") != -1)
+        bet.replace(bet.find("€"), 1, "");
+    if (bet.find(",") != -1)
+        bet.replace(bet.find(","), 1, ".");
+    double current_bet;
+    try {
+        current_bet = stod(bet);
+    }
+    catch (...) {
+        current_bet = 0.0;
+    }
+    */
+    return p_GetPlayerBet(chair); //
+}
+
+bool __stdcall GetPlayerPlaying(int chair) {
+    if (p_GetPlayerPlaying == nullptr) {
+        ErrorPointerNotInitialized("GetPlayerPlaying");
+        return false;
+    }/*
+    CString region; region.Format("p%iactive", chair);
+    int length;*/
+    return p_GetPlayerPlaying(chair);  // ScrapeTableMapRegion(CT2A(region.GetString()), length);
+}
+
+string __stdcall GetPlayerActing(int chair) {
+	/*if (p_GetPlayerActing == nullptr) {
+		ErrorPointerNotInitialized("GetPlayerActing");
+		return false;
+	}*/
+	CString region; region.Format("p%iacting", chair);
+	int length;
+    return ScrapeTableMapRegion(CT2A(region.GetString()), length);
+    //return p_GetPlayerActing(chair); // p_ScrapeTableMapRegion(CT2A(region.GetString()), length);
+}
+
+string __stdcall GetPlayerAction(int chair) {
+    /*if (p_GetPlayerAction == nullptr) {
+        ErrorPointerNotInitialized("GetPlayerAction");
+        return false;
+    }*/
+    CString region; region.Format("p%iaction", chair);
+    int length;
+    return ScrapeTableMapRegion(CT2A(region.GetString()), length);
+    //return p_GetPlayerAction(chair);
+}
+
+bool __stdcall GetPlayerHasAnyCards(int chair) {
+	if (p_GetPlayerHasAnyCards == nullptr) {
+		ErrorPointerNotInitialized("GetPlayerHasAnyCards");
+		return -1;
+	}
+	return p_GetPlayerHasAnyCards(chair);
 }
 
 char* __stdcall GetTableTitle() {
@@ -172,6 +257,12 @@ void InitializeOpenHoldemFunctionInterface() {
   p_GetPrw1326 = (t_GetPrw1326)LookupOpenHoldemFunction("GetPrw1326");
   p_GetHandnumber = (t_GetHandnumber)LookupOpenHoldemFunction("GetHandnumber");
   p_GetPlayerName = (t_GetPlayerName)LookupOpenHoldemFunction("GetPlayerName");
+  p_GetPlayerStack = (t_GetPlayerStack)LookupOpenHoldemFunction("GetPlayerStack");
+  p_GetPlayerBet = (t_GetPlayerStack)LookupOpenHoldemFunction("GetPlayerBet");
+  p_GetPlayerPlaying = (t_GetPlayerPlaying)LookupOpenHoldemFunction("GetPlayerPlaying");
+  p_GetPlayerActing = (t_GetPlayerActing)LookupOpenHoldemFunction("GetPlayerActing");
+  p_GetPlayerAction = (t_GetPlayerAction)LookupOpenHoldemFunction("GetPlayerAction");
+  p_GetPlayerHasAnyCards = (t_GetPlayerHasAnyCards)LookupOpenHoldemFunction("GetPlayerHasAnyCards");
   p_GetTableTitle = (t_GetTableTitle) LookupOpenHoldemFunction("GetTableTitle");
   p_ParseHandList = (t_ParseHandList)LookupOpenHoldemFunction("ParseHandList");
   p_ScrapeTableMapRegion = (t_ScrapeTableMapRegion)LookupOpenHoldemFunction("ScrapeTableMapRegion");

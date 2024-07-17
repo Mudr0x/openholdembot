@@ -24,6 +24,7 @@ class CStringMatch : public CSpaceOptimizedGlobalObject {
  public:
 	const bool IsNumeric(const CString t);// !!! unused
 	const bool IsStringSeated(const CString s);
+	const bool IsStringActing(const CString s);
 	const bool IsStringActive(const CString s);
 	const bool IsStringCardback(const CString s); // !!! unused
 	const bool IsStringDealer(const CString s);

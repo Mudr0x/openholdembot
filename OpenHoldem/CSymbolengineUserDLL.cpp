@@ -113,7 +113,7 @@ EXE_IMPLEMENTS void* GetPrw1326() {
 }
 
 EXE_IMPLEMENTS char* GetHandnumber() {
-  return p_handreset_detector->GetHandNumber().GetBuffer();
+  return (LPTSTR)(LPCTSTR)p_handreset_detector->GetHandNumber();
 }
 
 EXE_IMPLEMENTS char* GetPlayerName(int chair) {
@@ -123,11 +123,71 @@ EXE_IMPLEMENTS char* GetPlayerName(int chair) {
   if (chair > kLastChair) {
     return nullptr;
   }
-  return p_table_state->Player(chair)->name().GetBuffer();
+  return  (LPTSTR)(LPCTSTR)p_table_state->Player(chair)->name();
+}
+
+EXE_IMPLEMENTS double GetPlayerStack(int chair) {
+	if (chair < 0) {
+		return kUndefined;
+	}
+	if (chair > kLastChair) {
+		return kUndefined;
+	}
+	return  p_table_state->Player(chair)->stack();
+}
+
+EXE_IMPLEMENTS double GetPlayerBet(int chair) {
+	if (chair < 0) {
+		return kUndefined;
+	}
+	if (chair > kLastChair) {
+		return kUndefined;
+	}
+	return  p_table_state->Player(chair)->_bet.GetValue();
+}
+
+EXE_IMPLEMENTS bool GetPlayerPlaying(int chair) {
+	if (chair < 0) {
+		return kUndefined;
+	}
+	if (chair > kLastChair) {
+		return kUndefined;
+	}
+	return p_table_state->Player(chair)->seated() && p_table_state->Player(chair)->active(); // && GetPlayerHasAnyCards(chair);
+}
+
+EXE_IMPLEMENTS double GetPlayerActing(int chair) {
+	if (chair < 0) {
+		return kUndefined;
+	}
+	if (chair > kLastChair) {
+		return kUndefined;
+	}
+	return  p_table_state->Player(chair)->acting();
+}
+
+EXE_IMPLEMENTS double GetPlayerAction(int chair) {
+	if (chair < 0) {
+		return kUndefined;
+	}
+	if (chair > kLastChair) {
+		return kUndefined;
+	}
+	return  p_table_state->Player(chair)->get_action();
+}
+
+EXE_IMPLEMENTS bool GetPlayerHasAnyCards(int chair) {
+	if (chair < 0) {
+		return kUndefined;
+	}
+	if (chair > kLastChair) {
+		return kUndefined;
+	}
+	return  p_table_state->Player(chair)->HasAnyCards();
 }
 
 EXE_IMPLEMENTS char* GetTableTitle() {
-  return p_table_state->TableTitle()->PreprocessedTitle().GetBuffer();
+  return (LPTSTR)(LPCTSTR)p_table_state->TableTitle()->PreprocessedTitle();
 }
 
 EXE_IMPLEMENTS void ParseHandList(const char* name_of_list, const char* list_body) {

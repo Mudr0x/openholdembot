@@ -15,6 +15,7 @@
 #include "CSpaceOptimizedGlobalObject.h"
 #include "CVirtualSymbolEngine.h"
 
+class CSymbolEngineActing;
 class CSymbolEngineActiveDealtPlaying;
 class CSymbolEngineAutoplayer;
 class CSymbolEngineBlinds;
@@ -97,6 +98,8 @@ class CEngineContainer : public CSpaceOptimizedGlobalObject {
   bool _reset_on_connection_executed;
   CString _list_of_symbols;
 public:
+  CSymbolEngineActing *symbol_engine_acting()
+	{ return p_symbol_engine_acting; }
   CSymbolEngineActiveDealtPlaying *symbol_engine_active_dealt_playing()
     { return p_symbol_engine_active_dealt_playing; }
   CSymbolEngineAutoplayer *symbol_engine_autoplayer()
@@ -188,6 +191,7 @@ public:
   CSymbolEngineICM *symbol_engine_icm()
     { return p_symbol_engine_icm; }
 private:
+	CSymbolEngineActing *p_symbol_engine_acting;
   CSymbolEngineActiveDealtPlaying *p_symbol_engine_active_dealt_playing;
   CSymbolEngineAutoplayer *p_symbol_engine_autoplayer;
   CSymbolEngineBlinds *p_symbol_engine_blinds;

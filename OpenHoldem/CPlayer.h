@@ -48,6 +48,7 @@ class CPlayer {
  public:
   // Public accessors
   bool seated() { return _seated; }
+  bool acting() { return _acting; }
   bool active() { return _active; }
   bool dealer() { return _dealer; }
  public:
@@ -57,6 +58,9 @@ class CPlayer {
  public:
   // Public setters (must only be used by CScraper)
   void set_seated(bool is_seated);
+  void set_acting(bool is_acting) { _acting = is_acting; }
+  void set_action(CString action);
+  double get_action() { return _action; };
   void set_active(bool is_active) { _active = is_active; }
   void set_dealer(bool is_dealer) { _dealer = is_dealer; }
  public:
@@ -71,8 +75,10 @@ class CPlayer {
   CString _name;
   Card    _hole_cards[kMaxNumberOfCardsPerPlayer];
   int     _colourcode;
+  double _action;
  private:
   bool _seated;
+  bool _acting;
   bool _active;
   bool _dealer;
 };

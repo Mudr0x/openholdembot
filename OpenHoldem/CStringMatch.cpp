@@ -56,6 +56,21 @@ const bool CStringMatch::IsStringSeated(const CString s) {
 	}
 }
 
+const bool CStringMatch::IsStringActing(const CString s) {
+	// Check for bad parameters
+	if (!s || s == "") {
+		return false;
+	}
+	CString s_lower_case = s;
+	s_lower_case.MakeLower();
+	if (s_lower_case.Left(5) == "false" || s_lower_case.Left(8) == "unacting") {
+		return false;
+	}
+	else {
+		return (s_lower_case.Left(4) == "true" || s_lower_case.Left(6) == "acting");
+	}
+}
+
 const bool CStringMatch::IsStringActive(const CString s) {
 	// Check for bad parameters
   if (!s || s == "") {
@@ -109,10 +124,10 @@ const bool CStringMatch::IsStringAllin(const CString s) {
   s_lower_case.Remove('-');
   s_lower_case = s_lower_case.Left(5);
   return (s_lower_case == "allin"
-    || s_lower_case == "a11in"
-    || s_lower_case == "allln"
-    || s_lower_case == "a111n"
-    || s_lower_case == "aiiin"
-    || s_lower_case == "buyin"
-    || s_lower_case.Left(3) == "max");
+	  || s_lower_case == "a11in"
+	  || s_lower_case == "allln"
+	  || s_lower_case == "a111n"
+	  || s_lower_case == "aiiin"
+	  || s_lower_case == "buyin"
+	  || s_lower_case.Left(3) == "max");
 }
