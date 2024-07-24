@@ -274,12 +274,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "About this program"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,21,20
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
     LTEXT           "OpenHoldem",IDC_STATIC,32,10,208,8,SS_NOPREFIX
     LTEXT           "Version 14.0.2.0",IDC_STATIC,32,22,208,8,SS_NOPREFIX
     LTEXT           "Licensed under GPLv3",IDC_STATIC,32,34,208,8
     LTEXT           "http://www.maxinmontreal.com/forums/index.php",IDC_STATIC,32,54,208,8
-    LTEXT           "https://github.com/OpenHoldem/openholdembot/",IDC_STATIC,32,66,208,8
+    LTEXT           "https://github.com/Lab0ne/openholdembot/",IDC_STATIC,32,66,208,8
     LTEXT           "http://www.gnu.org/licenses/gpl.html",IDC_STATIC,32,78,208,8
     LTEXT           "Disclaimer: this is an open-source project.",IDC_STATIC,32,98,208,8,SS_NOPREFIX
     LTEXT           "We are not related to any shops, stores and/or scam-artists.",IDC_STATIC,32,110,208,8,SS_NOPREFIX
@@ -918,8 +918,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 14.0.2.0
- PRODUCTVERSION 14.0.2.0
+ FILEVERSION 14,0,0,0
+ PRODUCTVERSION 14,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1222,6 +1222,11 @@ END
 //
 
 IDD_SAPREFS AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ABOUTBOX AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
