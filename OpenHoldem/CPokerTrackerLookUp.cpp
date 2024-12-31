@@ -39,6 +39,35 @@ CPokerTrackerLookup::CPokerTrackerLookup() {
 	_pt4_siteid.insert(std::pair<CString, int> ("barriere", 2600));
 	// 2700 not (yet) supported, whatever it is
 	_pt4_siteid.insert(std::pair<CString, int> ("peoples", 2800));
+	_pt4_siteid.insert(std::pair<CString, int>("pokermaster", 2900));
+	_pt4_siteid.insert(std::pair<CString, int>("standardized", 3000));
+	_pt4_siteid.insert(std::pair<CString, int>("runitonce", 3100));
+	_pt4_siteid.insert(std::pair<CString, int>("ggpoker", 3200));
+	_pt4_siteid.insert(std::pair<CString, int>("9stacks", 3300));
+	_pt4_siteid.insert(std::pair<CString, int>("chico", 3400));
+	_pt4_siteid.insert(std::pair<CString, int>("pppoker", 3500));
+	_pt4_siteid.insert(std::pair<CString, int>("reddragon", 3600));
+	_pt4_siteid.insert(std::pair<CString, int>("pokerkingasia", 3700));
+	_pt4_siteid.insert(std::pair<CString, int>("wepoker", 3800));
+	_pt4_siteid.insert(std::pair<CString, int>("upoker", 3900));
+	_pt4_siteid.insert(std::pair<CString, int>("pokertime", 4000));
+	_pt4_siteid.insert(std::pair<CString, int>("pokercommunity", 4100));
+	_pt4_siteid.insert(std::pair<CString, int>("fishpoker", 4200));
+	_pt4_siteid.insert(std::pair<CString, int>("bingo", 4300));
+	_pt4_siteid.insert(std::pair<CString, int>("realpoker", 4400));
+	_pt4_siteid.insert(std::pair<CString, int>("allin", 4500));
+	_pt4_siteid.insert(std::pair<CString, int>("idn", 4600));
+	_pt4_siteid.insert(std::pair<CString, int>("pokerbros", 4700));
+	_pt4_siteid.insert(std::pair<CString, int>("cop", 6400));
+	_pt4_siteid.insert(std::pair<CString, int>("pokio", 6500));
+	_pt4_siteid.insert(std::pair<CString, int>("xpoker", 6600));
+	_pt4_siteid.insert(std::pair<CString, int>("swcpoker", 6700));
+	_pt4_siteid.insert(std::pair<CString, int>("pokersaint", 6800));
+	_pt4_siteid.insert(std::pair<CString, int>("pokerhigh", 6900));
+	_pt4_siteid.insert(std::pair<CString, int>("rapoker", 7000));
+	_pt4_siteid.insert(std::pair<CString, int>("latam", 7100));
+	_pt4_siteid.insert(std::pair<CString, int>("suprema", 7200));
+	_pt4_siteid.insert(std::pair<CString, int>("wepokerplus", 7300));
 }
 
 CPokerTrackerLookup::~CPokerTrackerLookup() {
