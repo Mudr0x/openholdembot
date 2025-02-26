@@ -57,7 +57,6 @@ CSymbolEngineVariousDataLookup::CSymbolEngineVariousDataLookup() {
   assert(p_handreset_detector != NULL);
   assert(p_formula_parser != NULL);
   assert(p_sessioncounter != NULL);
-  assert(p_gamecounter != NULL);
   assert(p_tablemap != NULL);
   assert(p_table_title != NULL);
   assert(p_white_info_box != NULL);
